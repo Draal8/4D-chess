@@ -31,19 +31,19 @@ EXEC = $(BINPATH)/main
 
 SRC  = $(wildcard $(SRCPATH)/*.cpp)
 HEAD = $(wildcard $(HEADPATH)/*.h)
-OBJ  = $(SRC:$(SRCPATH)/%.c=$(OBJPATH)/%.o)
+OBJ  = $(SRC:$(SRCPATH)/%.cpp=$(OBJPATH)/%.o)
 DIST = $(SRC) $(HEAD) Makefile Doxyfile
 
 ###### TARGETS ######
 all: $(EXEC)
 	@echo "${LCYAN}\nExécutable généré en mode"$(TEXTE)".${NC}"
 	
-$(EXEC): $(OBJPATH)/main.o $(OBJPATH)/piece.o
+$(EXEC): $(OBJ)
 	@echo "${LCYAN}\n----Rule " $@ "----${NC}"
 	$(CC) $(CPPFLAGS) -o $@ $^ $(CFLAGS) $(LDLIBS)
 	
 
-$(OBJPATH)/%.o: $(SRCPATH)/%.c
+$(OBJPATH)/%.o: $(SRCPATH)/%.cpp
 	@echo "${LCYAN}\n----Rule " $@ "----${NC}"
 	$(CC) $(CPPFLAGS) -o $@ -c $< $(CFLAGS) $(LDLIBS)
 
