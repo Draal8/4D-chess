@@ -28,7 +28,7 @@ class chessboard {
 	bool piece_in (int x, int y);
 	void move_piece (int initx, int inity, int x, int y);
 	
-	protected:
+	//protected:
 	piece *pieces[8][8];		//NULL si vide ou adresse
 	
 	private:

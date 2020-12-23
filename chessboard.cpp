@@ -71,13 +71,14 @@ int chessboard::coord_to_index (int x, int y) {
 // et 2 car un caractere de piece et un '|'
 
 bool chessboard::piece_in (int x, int y) {
-	return (pieces[x][y] != NULL);
+	cout << "x-y : " << x << "-" << y << endl;
+	return (pieces[y][x] != NULL);
 }
 
 void chessboard::move_piece (int initx, int inity, int x, int y) {
-	if (pieces[initx][inity]->deplacement(this, x, y)) {
-		pieces[x][y] = pieces[initx][inity];
-		pieces[initx][inity] = NULL;
+	if (pieces[inity][initx]->deplacement(this, x, y)) {
+		pieces[y][x] = pieces[inity][initx];
+		pieces[inity][initx] = NULL;
 	}
 	cout << "deplacement fini\n";
 }

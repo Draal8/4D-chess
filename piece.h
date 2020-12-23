@@ -27,6 +27,7 @@ class piece {
 	piece (char name, char coul, int x, int y);
 	~piece ();
 	char get_value ();
+	char get_color ();
 	
 	bool deplacement (chessboard *c, int x, int y);
 	
@@ -49,6 +50,7 @@ class piece {
 class king :public piece {
 	public:
 	king (char coul, int x, int y);
+	bool test_deplacement (chessboard *c, int x, int y);
 };
 
 class queen :public piece {
@@ -69,6 +71,7 @@ class knight :public piece {
 class rook :public piece {
 	public:
 	rook (char coul, int x, int y);
+	bool test_deplacement (chessboard *c, int x, int y);
 };
 
 class pawn :public piece {

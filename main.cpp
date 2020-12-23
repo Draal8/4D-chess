@@ -14,9 +14,17 @@ int main() {
 	c = p->get_value();
 	cout << "c : " << c << endl;*/
 	
+	//cout << "\033[1;36mbonjour\033[0m" << endl;
+	
 	chessboard *c = new chessboard ();
+	c->pieces[4][1] = new rook('W', 1, 4);
 	c->print_chessboard ();
-	c->move_piece(0,6,0,5);
+	
+	c->move_piece(1,4,1,0);
+	cout << endl;
+	c->print_chessboard ();
+	
+	
 	
 	c->~chessboard ();
 	return 0;
