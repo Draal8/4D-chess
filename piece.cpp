@@ -32,25 +32,31 @@ bool piece::test_deplacement (chessboard *c, int x, int y) {
 	return false;
 }
 
-/*
-bool piece::tour_recontre_piece (int x, int y) {
+bool piece::tour_rencontre_piece (chessboard *c, int x, int y) {
+	cout << "tour_recontre_piece" << endl;
 	int i;
 	if (x != posx) {
+		cout << "x et posx :" << x << "-" << posx << endl;
 		int signe = (posx-x) / abs(posx-x); //= 1 ou -1
-		for (i = posx+1; i != x; i = i - signe) {
-			if (piece_en(i,y))
-				return false;
+		for (i = posx-signe; i != x; i = i - signe) {
+			if (c->piece_in(i,y))
+				return true;
 		}
 	} else {
+		cout << "y:" << y << " et posy:" << posy << endl;
 		int signe = (posy-y) / abs(posy-y);
-		for (i = posy+1; i != y; i = i - signe) {
-			if (piece_en(x,i))
-				return false;
+		cout << "signe = " << signe << endl;
+		for (i = posy-signe; i != y; i = i - signe) {
+			cout << "piece_in : " << c->piece_in(x,i) << endl;
+			if (c->piece_in(x,i)) {
+				cout << "trouve en " << i << endl;
+				return true;
+			}
 		}
 	}
-	return true;
+	return false;
 }
-
+/*
 bool piece::fou_rencontre_piece (int x, int y) {
 	int i, j;
 	int signex = (posx-x) / abs(posx-x); //= 1 ou -1
@@ -138,7 +144,8 @@ bool rook::test_deplacement (chessboard *c, int x, int y) {
 	if (x == posx && y == posy)
 		return false;
 	if (x == posx || y == posy)	//pas besoin de tester y != posy ou x != posx a cause le condition au-dessus
-		return true;
+		if (!tour_rencontre_piece(c, x, y) && c->couleur_in(x,y) != get_color())
+			return true;
 	return false;
 }
 

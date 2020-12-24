@@ -71,8 +71,12 @@ int chessboard::coord_to_index (int x, int y) {
 // et 2 car un caractere de piece et un '|'
 
 bool chessboard::piece_in (int x, int y) {
-	cout << "x-y : " << x << "-" << y << endl;
+	//cout << "x-y : " << x << "-" << y << endl;
 	return (pieces[y][x] != NULL);
+}
+
+char chessboard::couleur_in (int x, int y) {
+	return pieces[y][x]->couleur;
 }
 
 void chessboard::move_piece (int initx, int inity, int x, int y) {

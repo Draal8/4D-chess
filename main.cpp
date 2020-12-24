@@ -20,7 +20,7 @@ int main() {
 	c->pieces[4][1] = new rook('W', 1, 4);
 	c->print_chessboard ();
 	
-	c->move_piece(1,4,1,0);
+	c->move_piece(1,4,1,6);
 	cout << endl;
 	c->print_chessboard ();
 	

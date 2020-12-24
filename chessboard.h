@@ -26,9 +26,10 @@ class chessboard {
 	void print_chessboard ();
 	int coord_to_index (int x, int y);
 	bool piece_in (int x, int y);
+	char couleur_in (int x, int y);
 	void move_piece (int initx, int inity, int x, int y);
 	
-	//protected:
+	protected:
 	piece *pieces[8][8];		//NULL si vide ou adresse
 	
 	private:

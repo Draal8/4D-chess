@@ -28,7 +28,6 @@ class piece {
 	~piece ();
 	char get_value ();
 	char get_color ();
-	
 	bool deplacement (chessboard *c, int x, int y);
 	
 	protected:
@@ -37,10 +36,11 @@ class piece {
 	int posx;
 	int posy;
 	
+	bool tour_rencontre_piece (chessboard *c, int x, int y);
+	bool fou_recontre_piece (chessboard *c, int x, int y);
+	
 	private:
 	virtual bool test_deplacement (chessboard *c, int x, int y);
-	bool tour_recontre_piece (int x, int y);
-	bool fou_recontre_piece (int x, int y);
 	//void p_die();
 	
 };
