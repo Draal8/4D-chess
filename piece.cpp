@@ -144,8 +144,9 @@ bool rook::test_deplacement (chessboard *c, int x, int y) {
 	if (x == posx && y == posy)
 		return false;
 	if (x == posx || y == posy)	//pas besoin de tester y != posy ou x != posx a cause le condition au-dessus
-		if (!tour_rencontre_piece(c, x, y) && c->couleur_in(x,y) != get_color())
-			return true;
+		if (!tour_rencontre_piece(c, x, y))
+			if (c->get_piece(x,y)->get_color() != couleur)
+				return true;
 	return false;
 }
 
@@ -165,7 +166,7 @@ bool pawn::test_deplacement (chessboard *c, int x, int y) {
 			if (!c->piece_in(x, y))
 				return true;
 		} else if (c->piece_in(x, y)) {
-			if (c->pieces[y][x]->get_color() == couleur) {
+			if (c->get_piece(x,y)->get_color() == couleur) {
 				return false;
 			} else {
 				return true;

@@ -75,9 +75,13 @@ bool chessboard::piece_in (int x, int y) {
 	return (pieces[y][x] != NULL);
 }
 
-char chessboard::couleur_in (int x, int y) {
-	return pieces[y][x]->couleur;
+piece * chessboard::get_piece (int x, int y) {
+	return pieces[y][x];
 }
+
+/*char chessboard::couleur_in (int x, int y) {
+	return pieces[y][x]->couleur;
+}*/
 
 void chessboard::move_piece (int initx, int inity, int x, int y) {
 	if (pieces[inity][initx]->deplacement(this, x, y)) {
