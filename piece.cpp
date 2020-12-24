@@ -56,19 +56,20 @@ bool piece::tour_rencontre_piece (chessboard *c, int x, int y) {
 	}
 	return false;
 }
-/*
-bool piece::fou_rencontre_piece (int x, int y) {
+
+bool piece::fou_rencontre_piece (chessboard *c, int x, int y) {
+	cout << "fou_recontre_piece" << endl;
 	int i, j;
 	int signex = (posx-x) / abs(posx-x); //= 1 ou -1
 	int signey = (posy-y) / abs(posy-y);
-	j = posy+1;
-	for (i = posx+1; i != x; i = i - signex) {
+	j = posy-signey;
+	for (i = posx-signex; i != x; i = i - signex) {
+		if (c->piece_in(i,j))
+			return true;
 		j = j - signey;
-		if (piece_en(x,i))
-			return false;
 	}
-	return true;
-}*/
+	return false;
+}
 
 king::king (char coul, int x, int y) : piece(KING, coul, x, y) {}
 
@@ -84,69 +85,90 @@ bool king::test_deplacement (chessboard *c, int x, int y) {
 
 queen::queen (char coul, int x, int y) : piece(QUEEN, coul, x, y) {}
 
-/*
-bool queen::test_deplacement (int x, int y) {
+bool queen::test_deplacement (chessboard *c, int x, int y) {
 	cout << "test deplacement reine" << endl;
+	piece *p;
 	if (x < 0 || y < 0 || x > 7 || y > 7)
 		return false;
 	if (x == posx && y == posy)
 		return false;
 	if (x == posx || y == posy) {	//pas besoin de tester y != posy ou x != posx a cause le condition au-dessus
-		tour_recontre_piece (x,y);
-		return true;
+		if (!tour_rencontre_piece (c,x,y)) {
+			p = c->get_piece(x,y);
+			if (p != NULL && p->get_color() != couleur)
+				return true;
+			if (p == NULL) return true;
+		}
 	}
 	if (abs(posx-x) == abs(posy-y)) {
-		fou_rencontre_piece (x,y);
-		return true;
+		if (!fou_rencontre_piece (c,x,y)) {
+			p = c->get_piece(x,y);
+			if (p != NULL && p->get_color() != couleur)
+				return true;
+			if (p == NULL) return true;
+		}
 	}
 	return false;
-}*/
+}
 
 bishop::bishop (char coul, int x, int y) : piece(BISHOP, coul, x, y) {}
 
-/*
-bool bishop::test_deplacement (int x, int y) {
- 	cout << "test deplacement reine" << endl;
+bool bishop::test_deplacement (chessboard *c, int x, int y) {
+ 	cout << "test deplacement bishop" << endl;
+ 	(void) c;
+ 	piece *p;
 	if (x < 0 || y < 0 || x > 7 || y > 7)
 		return false;
 	if (x == posx && y == posy)
 		return false;
-	if (x == posx || y == posy)	//pas besoin de tester y != posy ou x != posx a cause le condition au-dessus
-		return true;
-	if (abs(posx-x) == abs(posy-y))
-		return true;
+	if (abs(posx-x) == abs(posy-y)) {
+		if (!fou_rencontre_piece(c, x, y)) {
+			p = c->get_piece(x,y);
+			if (p != NULL && p->get_color() != couleur)
+				return true;
+			if (p == NULL) return true;
+		}
+	}
 	return false;
-}*/
+}
 
 knight::knight (char coul, int x, int y) : piece(KNIGHT, coul, x, y) {}
 
-/*
-bool knight::test_deplacement (int x, int y) {
-	cour << "test deplacement cavalier" << endl;
+bool knight::test_deplacement (chessboard *c, int x, int y) {
+	cout << "test deplacement cavalier" << endl;
 	if (x < 0 || y < 0 || x > 7 || y > 7)
 		return false;
 	if (x == posx && y == posy)
 		return false;
 	if ((abs(posx-x) == 2 && abs(posy-y) == 1) ||
 	(abs(posy-y) == 2 && abs(posx-x) == 1)) {
+		if (c->piece_in (x, y)) {
+			piece * p = c->get_piece (x, y);
+			if (p->get_color() == couleur)
+				return false;
+		}
 		return true;
 	}
 	return false;
-}*/
+}
 
 rook::rook (char coul, int x, int y) : piece(ROOK, coul, x, y) {}
 
 bool rook::test_deplacement (chessboard *c, int x, int y) {
 	cout << "test deplacement tour" << endl;
 	(void) c;
+	piece *p;
 	if (x < 0 || y < 0 || x > 7 || y > 7)
 		return false;
 	if (x == posx && y == posy)
 		return false;
 	if (x == posx || y == posy)	//pas besoin de tester y != posy ou x != posx a cause le condition au-dessus
-		if (!tour_rencontre_piece(c, x, y))
-			if (c->get_piece(x,y)->get_color() != couleur)
+		if (!tour_rencontre_piece(c, x, y)) {
+			p = c->get_piece(x,y);
+			if (p != NULL && p->get_color() != couleur)
 				return true;
+			if (p == NULL) return true;
+		}
 	return false;
 }
 

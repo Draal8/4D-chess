@@ -37,7 +37,7 @@ class piece {
 	int posy;
 	
 	bool tour_rencontre_piece (chessboard *c, int x, int y);
-	bool fou_recontre_piece (chessboard *c, int x, int y);
+	bool fou_rencontre_piece (chessboard *c, int x, int y);
 	
 	private:
 	virtual bool test_deplacement (chessboard *c, int x, int y);
@@ -56,16 +56,19 @@ class king :public piece {
 class queen :public piece {
 	public:
 	queen (char coul, int x, int y);
+	bool test_deplacement (chessboard *c, int x, int y);
 };
 
 class bishop :public piece {
 	public:
 	bishop (char coul, int x, int y);
+	bool test_deplacement (chessboard *c, int x, int y);
 };
 
 class knight :public piece {
 	public:
 	knight (char coul, int x, int y);
+	bool test_deplacement (chessboard *c, int x, int y);
 };
 
 class rook :public piece {
