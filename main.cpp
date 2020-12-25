@@ -17,12 +17,17 @@ int main() {
 	//cout << "\033[1;36mbonjour\033[0m" << endl;
 	
 	chessboard *c = new chessboard ();
-	c->pieces[4][3] = new queen('W', 3, 4);
-	c->print_chessboard ();
+	//c->pieces[4][3] = new queen('W', 3, 4);
+	//c->print_chessboard ();
 	
-	c->move_piece(3,4,6,7);
+	//c->move_piece(3,4,6,7);
+	c->move_piece(3,6,3,5);
+	
+	
+	
+	
 	cout << endl;
-	c->print_chessboard ();
+	c->print_chessboard2 ();
 	
 	
 	

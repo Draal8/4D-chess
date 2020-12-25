@@ -20,22 +20,29 @@ H||R|C|B|Q|K|B|C|R|
 
 class chessboard {
 	public:
+	//Constructor/Destructor
 	chessboard ();
 	~chessboard ();
 	void init_chessboard ();
+	
+	//Print chessboard
 	void print_chessboard ();
+	void print_chessboard2 ();
 	int coord_to_index (int x, int y);
+	
+	//Piece manipulation
 	bool piece_in (int x, int y);
 	piece *get_piece (int x, int y);
 	void move_piece (int initx, int inity, int x, int y);
+	//bool test_endgame ();
 	
-	
-	//protected:
+	protected:
 	piece *pieces[8][8];		//NULL si vide ou adresse
 	
 	private:
-	bool test_endgame ();
-	void endgame ();
+	int shift_color;
+	int shift_nc;
+	//void endgame ();
 	
 };
 

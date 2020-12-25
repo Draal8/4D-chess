@@ -5,6 +5,10 @@
 
 using namespace std;
 
+/**********************************************************
+						Class Piece
+**********************************************************/
+
 piece::piece (char name, char coul, int x, int y) {
 	couleur = coul;
 	value = name;
@@ -71,6 +75,11 @@ bool piece::fou_rencontre_piece (chessboard *c, int x, int y) {
 	return false;
 }
 
+
+/**********************************************************
+						Class King
+**********************************************************/
+
 king::king (char coul, int x, int y) : piece(KING, coul, x, y) {}
 
 bool king::test_deplacement (chessboard *c, int x, int y) {
@@ -82,6 +91,11 @@ bool king::test_deplacement (chessboard *c, int x, int y) {
 		return true;
 	return false;
 }
+
+
+/**********************************************************
+						Class Queen
+**********************************************************/
 
 queen::queen (char coul, int x, int y) : piece(QUEEN, coul, x, y) {}
 
@@ -111,6 +125,11 @@ bool queen::test_deplacement (chessboard *c, int x, int y) {
 	return false;
 }
 
+
+/**********************************************************
+						Class Bishop
+**********************************************************/
+
 bishop::bishop (char coul, int x, int y) : piece(BISHOP, coul, x, y) {}
 
 bool bishop::test_deplacement (chessboard *c, int x, int y) {
@@ -132,6 +151,11 @@ bool bishop::test_deplacement (chessboard *c, int x, int y) {
 	return false;
 }
 
+
+/**********************************************************
+						Class Knight
+**********************************************************/
+
 knight::knight (char coul, int x, int y) : piece(KNIGHT, coul, x, y) {}
 
 bool knight::test_deplacement (chessboard *c, int x, int y) {
@@ -151,6 +175,11 @@ bool knight::test_deplacement (chessboard *c, int x, int y) {
 	}
 	return false;
 }
+
+
+/**********************************************************
+						Class Rook
+**********************************************************/
 
 rook::rook (char coul, int x, int y) : piece(ROOK, coul, x, y) {}
 
@@ -172,10 +201,15 @@ bool rook::test_deplacement (chessboard *c, int x, int y) {
 	return false;
 }
 
+
+/**********************************************************
+						Class Pawn
+**********************************************************/
+
 pawn::pawn (char coul, int x, int y) : piece(PAWN, coul, x, y) {}
 
 bool pawn::test_deplacement (chessboard *c, int x, int y) {
-	cout << "test deplacement piont" << endl;
+	cout << "test deplacement pion" << endl;
 	if (x < 0 || y < 0 || x > 7 || y > 7)
 		return false;
 	

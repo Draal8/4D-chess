@@ -24,18 +24,24 @@ enum p_value {
 
 class piece {
 	public:
+	//constructor/destructor
 	piece (char name, char coul, int x, int y);
 	~piece ();
-	char get_value ();
-	char get_color ();
+	
 	bool deplacement (chessboard *c, int x, int y);
 	
+	//accesseurs
+	char get_value ();
+	char get_color ();
+	
+	//uniquement accessible par les fils
 	protected:
 	char couleur;	//'B' ou 'N'
 	char value = NO_VALUE;
 	int posx;
 	int posy;
 	
+	//test de rencontre de pieces au passage
 	bool tour_rencontre_piece (chessboard *c, int x, int y);
 	bool fou_rencontre_piece (chessboard *c, int x, int y);
 	
@@ -45,7 +51,11 @@ class piece {
 	
 };
 
-//Specialisation of pieces
+/*
+===========================================================
+				Specialisation of pieces
+===========================================================
+*/
 
 class king :public piece {
 	public:

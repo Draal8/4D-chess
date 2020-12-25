@@ -2,7 +2,23 @@
 
 using namespace std;
 
+//https://techstop.github.io/bash-script-colors/
+
 char empty_chessboard[] = "   1 2 3 4 5 6 7 8 \nA | | | | | | | | |\nB | | | | | | | | |\nC | | | | | | | | |\nD | | | | | | | | |\nE | | | | | | | | |\nF | | | | | | | | |\nG | | | | | | | | |\nH | | | | | | | | |\n";
+
+char black[] = "\e[0;30m";
+char red[] = "\e[0;91m";
+char green[] = "\e[0;32m";
+char yellow[] = "\e[0;33m";
+char blue[] = "\e[0;34m";
+char purple[] = "\e[0;35m";
+char cyan[] = "\e[0;36m";
+char white[] = "\e[0;37m";
+char noColor[] = "\033[0m";
+int colLen = 7;
+int NcLen = 4;
+
+//Constructor/Destructor
 
 chessboard::chessboard () {
 	init_chessboard ();
@@ -44,8 +60,10 @@ void chessboard::init_chessboard () {
 	for (i = 0; i < 8; i++)
 		pieces[6][i] = new pawn('W', i, 6);
 	
-	cout << "   1 2 3 4 5 6 7 8 \nA |R|C|B|Q|K|B|C|R|\nB |P|P|P|P|P|P|P|P|\nC | | | | | | | | |\nD | | | | | | | | |\nE | | | | | | | | |\nF | | | | | | | | |\nG |P|P|P|P|P|P|P|P|\nH |R|C|B|Q|K|B|C|R|\n\n";
+	print_chessboard2 ();
 }
+
+//Print chessboard
 
 void chessboard::print_chessboard () {
 	int i, j;
@@ -63,6 +81,40 @@ void chessboard::print_chessboard () {
 	cout << str << endl;
 }
 
+void chessboard::print_chessboard2 () {
+	int i, j;
+	char str[511], tmp[5], color[16];
+	char c;
+	shift_color = 0;
+	shift_nc = 0;
+	snprintf(color, 16, "%s %s|", yellow, noColor);
+	strcpy(str, "   1 2 3 4 5 6 7 8 \n");
+	
+	for (i = 0; i < 8; i++) {
+		strcpy(tmp, "\n  |");
+		c = 'A' + i;
+		tmp[1] = c;
+		strcat(&str[strlen(str)], tmp);
+		
+		for (j = 0; j < 8; j++) {
+			if (pieces[i][j] != NULL) {
+				if (pieces[i][j]->get_color() == 'B') {
+					strcat(&str[strlen(str)], color);
+					str[strlen(str)-colLen+1] = pieces[i][j]->get_value();
+				} else {
+					strcat(&str[strlen(str)], " |");
+					str[strlen(str)-2] = pieces[i][j]->get_value();
+				}
+			} else {
+				strcat(&str[strlen(str)], " |");
+			}
+		}
+	}
+	str[strlen(str)+1] = '\0';
+	str[strlen(str)] = '\n';
+	cout << str << endl;	
+}
+
 int chessboard::coord_to_index (int x, int y) {
 	return 3 + 20*(y+1) + 2*x;
 }
@@ -70,18 +122,15 @@ int chessboard::coord_to_index (int x, int y) {
 // 19 de taille de ligne
 // et 2 car un caractere de piece et un '|'
 
+//Piece manipulation
+
 bool chessboard::piece_in (int x, int y) {
-	//cout << "x-y : " << x << "-" << y << endl;
 	return (pieces[y][x] != NULL);
 }
 
 piece * chessboard::get_piece (int x, int y) {
 	return pieces[y][x];
 }
-
-/*char chessboard::couleur_in (int x, int y) {
-	return pieces[y][x]->couleur;
-}*/
 
 void chessboard::move_piece (int initx, int inity, int x, int y) {
 	if (pieces[inity][initx]->deplacement(this, x, y)) {
