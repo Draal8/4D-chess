@@ -22,6 +22,8 @@ int NcLen = 4;
 
 chessboard::chessboard () {
 	init_chessboard ();
+	players[0] = new player('W');
+	players[1] = new player('B');
 }
 
 chessboard::~chessboard () {
@@ -88,7 +90,7 @@ void chessboard::print_chessboard2 () {
 	shift_color = 0;
 	shift_nc = 0;
 	snprintf(color, 16, "%s %s|", yellow, noColor);
-	strcpy(str, "   1 2 3 4 5 6 7 8 \n");
+	strcpy(str, "   1 2 3 4 5 6 7 8 ");
 	
 	for (i = 0; i < 8; i++) {
 		strcpy(tmp, "\n  |");
@@ -118,7 +120,7 @@ void chessboard::print_chessboard2 () {
 int chessboard::coord_to_index (int x, int y) {
 	return 3 + 20*(y+1) + 2*x;
 }
-// 3 de base car toutes les colonnes commencent par 'A||'
+// 3 de base car toutes les colonnes commencent par 'A |'
 // 19 de taille de ligne
 // et 2 car un caractere de piece et un '|'
 
@@ -132,12 +134,58 @@ piece * chessboard::get_piece (int x, int y) {
 	return pieces[y][x];
 }
 
-void chessboard::move_piece (int initx, int inity, int x, int y) {
+bool chessboard::move_piece (int initx, int inity, int x, int y) {
 	if (pieces[inity][initx]->deplacement(this, x, y)) {
 		pieces[y][x] = pieces[inity][initx];
 		pieces[inity][initx] = NULL;
 	}
 	cout << "deplacement fini\n";
+	return true;
+}
+
+void chessboard::kill (piece *p) {
+	if (p->get_value () == EN_PASSANT)
+		p->~en_passant(this);
+	delete p;
+}
+
+bool chessboard::test_moves (int x, int y) {
+	piece *p = pieces[y][x];
+	if (p == NULL) {
+		cout << "La case sélectionné ne contient pas de pièce\n";
+		return true;
+	}
+	//test de couleur
+	
+	return false;
+}
+
+bool chessboard::double_step (int x, int y) {
+	if (test_moves(x,y)) return false;
+	if (pieces[y][x]->get_value() != PAWN) {
+		cout << "La pièce n'est pas un pion\n";
+		return false;
+	}
+	
+	char color = pieces[y][x]->get_color();
+	if (y == 1) {
+		if (pieces[2][x] == NULL && pieces[3][x] == NULL) {
+			pieces[y][x]->fdeplacement (x, 3);
+			pieces[3][x] = pieces[y][x];
+			pieces[y][x] = NULL;
+			pieces[2][x] = new en_passant(color, x, 2, pieces[3][x]);
+			players[1]->set_S_pass(true, 2, x);
+		}
+	} else if (y == 6) {
+		if (pieces[5][x] == NULL && pieces[4][x] == NULL) {
+			pieces[y][x]->fdeplacement (x, 4);
+			pieces[4][x] = pieces[y][x];
+			pieces[y][x] = NULL;
+			pieces[5][x] = new en_passant(color, x, 5, pieces[4][x]);
+			players[0]->set_S_pass(true, 5, x);
+		}
+	}
+	return true;
 }
 
 

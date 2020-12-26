@@ -5,6 +5,7 @@
 #include <cstring>
 class chessboard;
 #include "piece.h"
+#include "player.h"
 
 /*
  ||1|2|3|4|5|6|7|8|
@@ -33,13 +34,22 @@ class chessboard {
 	//Piece manipulation
 	bool piece_in (int x, int y);
 	piece *get_piece (int x, int y);
-	void move_piece (int initx, int inity, int x, int y);
+	bool move_piece (int initx, int inity, int x, int y);
+	void kill (piece *p);
+	
+	//Special moves
+	bool castling (char mode, piece *king);	//rock
+	bool en_passant (int x, int y);
+	bool double_step(int x, int y);
+	void promotion(piece *pawn);
 	//bool test_endgame ();
 	
-	protected:
+	//protected:
 	piece *pieces[8][8];		//NULL si vide ou adresse
+	player *players[2];
 	
 	private:
+	bool test_moves (int x, int y);
 	int shift_color;
 	int shift_nc;
 	//void endgame ();

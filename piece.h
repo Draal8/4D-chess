@@ -19,16 +19,18 @@ enum p_value {
 	BISHOP = 'B',			//Fou
 	KNIGHT = 'C',			//Cavalier
 	ROOK = 'R',				//Tour
-	PAWN = 'P'				//Pion
+	PAWN = 'P',				//Pion
+	EN_PASSANT = '_'		//Phantom value for 'en passant' coup
 };
 
 class piece {
 	public:
 	//constructor/destructor
 	piece (char name, char coul, int x, int y);
-	~piece ();
+	virtual ~piece ();
 	
 	bool deplacement (chessboard *c, int x, int y);
+	void fdeplacement (int x, int y);
 	
 	//accesseurs
 	char get_value ();
@@ -60,37 +62,51 @@ class piece {
 class king :public piece {
 	public:
 	king (char coul, int x, int y);
+	~king ();
 	bool test_deplacement (chessboard *c, int x, int y);
 };
 
 class queen :public piece {
 	public:
 	queen (char coul, int x, int y);
+	~queen ();
 	bool test_deplacement (chessboard *c, int x, int y);
 };
 
 class bishop :public piece {
 	public:
 	bishop (char coul, int x, int y);
+	~bishop ();
 	bool test_deplacement (chessboard *c, int x, int y);
 };
 
 class knight :public piece {
 	public:
 	knight (char coul, int x, int y);
+	~knight ();
 	bool test_deplacement (chessboard *c, int x, int y);
 };
 
 class rook :public piece {
 	public:
 	rook (char coul, int x, int y);
+	~rook ();
 	bool test_deplacement (chessboard *c, int x, int y);
 };
 
 class pawn :public piece {
 	public:
 	pawn (char coul, int x, int y);
+	~pawn ();
 	bool test_deplacement (chessboard *c, int x, int y);
+};
+
+class en_passant :public piece {
+	public:
+	en_passant (char coul, int x, int y, piece *p);
+	~en_passant ();
+	private:
+	piece *origine;
 };
 
 #endif

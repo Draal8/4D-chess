@@ -26,9 +26,16 @@ bool piece::deplacement (chessboard *c, int x, int y) {
 		cout << "\ndeplacement illégal\n";
 		return false;
 	}
+	if (c->piece_in(x,y))
+		c->kill(c->get_piece(x,y));
 	posx = x;
 	posy = y;
 	return true;
+}
+
+void piece::fdeplacement (int x, int y) {
+	posx = x;
+	posy = y;
 }
 
 bool piece::test_deplacement (chessboard *c, int x, int y) {
@@ -82,6 +89,10 @@ bool piece::fou_rencontre_piece (chessboard *c, int x, int y) {
 
 king::king (char coul, int x, int y) : piece(KING, coul, x, y) {}
 
+king::~king () {
+	value = NO_VALUE;
+}
+
 bool king::test_deplacement (chessboard *c, int x, int y) {
 	cout << "test deplacement roi" << endl;
 	(void) c;
@@ -98,6 +109,10 @@ bool king::test_deplacement (chessboard *c, int x, int y) {
 **********************************************************/
 
 queen::queen (char coul, int x, int y) : piece(QUEEN, coul, x, y) {}
+
+queen::~queen () {
+	value = NO_VALUE;
+}
 
 bool queen::test_deplacement (chessboard *c, int x, int y) {
 	cout << "test deplacement reine" << endl;
@@ -132,6 +147,10 @@ bool queen::test_deplacement (chessboard *c, int x, int y) {
 
 bishop::bishop (char coul, int x, int y) : piece(BISHOP, coul, x, y) {}
 
+bishop::~bishop () {
+	value = NO_VALUE;
+}
+
 bool bishop::test_deplacement (chessboard *c, int x, int y) {
  	cout << "test deplacement bishop" << endl;
  	(void) c;
@@ -158,6 +177,10 @@ bool bishop::test_deplacement (chessboard *c, int x, int y) {
 
 knight::knight (char coul, int x, int y) : piece(KNIGHT, coul, x, y) {}
 
+knight::~knight () {
+	value = NO_VALUE;
+}
+
 bool knight::test_deplacement (chessboard *c, int x, int y) {
 	cout << "test deplacement cavalier" << endl;
 	if (x < 0 || y < 0 || x > 7 || y > 7)
@@ -182,6 +205,10 @@ bool knight::test_deplacement (chessboard *c, int x, int y) {
 **********************************************************/
 
 rook::rook (char coul, int x, int y) : piece(ROOK, coul, x, y) {}
+
+rook::~rook () {
+	value = NO_VALUE;
+}
 
 bool rook::test_deplacement (chessboard *c, int x, int y) {
 	cout << "test deplacement tour" << endl;
@@ -208,6 +235,10 @@ bool rook::test_deplacement (chessboard *c, int x, int y) {
 
 pawn::pawn (char coul, int x, int y) : piece(PAWN, coul, x, y) {}
 
+pawn::~pawn () {
+	value = NO_VALUE;
+}
+
 bool pawn::test_deplacement (chessboard *c, int x, int y) {
 	cout << "test deplacement pion" << endl;
 	if (x < 0 || y < 0 || x > 7 || y > 7)
@@ -232,4 +263,23 @@ bool pawn::test_deplacement (chessboard *c, int x, int y) {
 	
 	return false;
 }
+
+
+/**********************************************************
+						Class En_passant
+**********************************************************/
+
+en_passant::en_passant (char coul, int x, int y, piece *p) : piece(EN_PASSANT, coul, x, y) {
+	origine = p;
+}
+
+en_passant::~en_passant (chessboard *c) {
+	if (c->piece_in(posx, posy)) {
+		c->kill(origine);
+	value = NO_VALUE;
+}
+
+
+
+
 

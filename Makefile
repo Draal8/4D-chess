@@ -15,7 +15,7 @@ CC = g++
 
 ifeq ($(DEBUG),YES)
 	CPPFLAGS +=
-	CFLAGS   += -Wall -Wextra -Werror -g
+	CFLAGS   += -Wall -Wextra -g
 	LDLIBS   +=
 	TEXTE 	 += " debug"
 
