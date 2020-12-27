@@ -20,6 +20,9 @@ piece::~piece () { }
 
 char piece::get_value () { return value; }
 char piece::get_color () { return couleur; }
+int piece::get_y () { return posy; }
+int piece::get_x () { return posx; }
+
 
 bool piece::deplacement (chessboard *c, int x, int y) {
 	if (!this->test_deplacement(c,x,y)) {
@@ -27,7 +30,7 @@ bool piece::deplacement (chessboard *c, int x, int y) {
 		return false;
 	}
 	if (c->piece_in(x,y))
-		c->kill(c->get_piece(x,y));
+		c->kill(c->get_piece(x,y), 0);
 	posx = x;
 	posy = y;
 	return true;
@@ -245,6 +248,7 @@ bool pawn::test_deplacement (chessboard *c, int x, int y) {
 		return false;
 	
 	if (abs(posy-y) == 1) {
+		cout << "abs(posy-y)\n";
 		if (posy-y > 0 && couleur == 'B')
 			return false;
 		if (posy-y < 0 && couleur == 'W')
@@ -253,7 +257,10 @@ bool pawn::test_deplacement (chessboard *c, int x, int y) {
 			if (!c->piece_in(x, y))
 				return true;
 		} else if (c->piece_in(x, y)) {
-			if (c->get_piece(x,y)->get_color() == couleur) {
+			cout << "c->piece_in\n";
+			piece *p = c->get_piece(x,y);
+			cout << "p = " << p << endl;
+			if (p->get_color() == couleur) {
 				return false;
 			} else {
 				return true;
@@ -269,13 +276,11 @@ bool pawn::test_deplacement (chessboard *c, int x, int y) {
 						Class En_passant
 **********************************************************/
 
-en_passant::en_passant (char coul, int x, int y, piece *p) : piece(EN_PASSANT, coul, x, y) {
+enPassant::enPassant (char coul, int x, int y, piece *p) : piece(EN_PASSANT, coul, x, y) {
 	origine = p;
 }
 
-en_passant::~en_passant (chessboard *c) {
-	if (c->piece_in(posx, posy)) {
-		c->kill(origine);
+enPassant::~enPassant () {
 	value = NO_VALUE;
 }
 

@@ -7,6 +7,16 @@ player::player (char col) {
 
 player::~player () { }
 
+/*void player::turn(chessboard *c) {
+	if (S_pass.actif == true) {
+		c->kill(c->get_piece(S_pass.x, S_pass.y), 1);
+		S_pass.actif = false;
+	}
+	
+	
+}*/
+
+//Getters/Setters
 char player::get_color () {
 	return color;
 }

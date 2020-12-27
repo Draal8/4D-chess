@@ -35,7 +35,7 @@ class chessboard {
 	bool piece_in (int x, int y);
 	piece *get_piece (int x, int y);
 	bool move_piece (int initx, int inity, int x, int y);
-	void kill (piece *p);
+	void kill (piece *p, int mode);
 	
 	//Special moves
 	bool castling (char mode, piece *king);	//rock
@@ -47,8 +47,9 @@ class chessboard {
 	//protected:
 	piece *pieces[8][8];		//NULL si vide ou adresse
 	player *players[2];
-	
+	void turn(int i);
 	private:
+	
 	bool test_moves (int x, int y);
 	int shift_color;
 	int shift_nc;

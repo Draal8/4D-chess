@@ -35,6 +35,8 @@ class piece {
 	//accesseurs
 	char get_value ();
 	char get_color ();
+	int get_x ();
+	int get_y ();
 	
 	//uniquement accessible par les fils
 	protected:
@@ -101,11 +103,10 @@ class pawn :public piece {
 	bool test_deplacement (chessboard *c, int x, int y);
 };
 
-class en_passant :public piece {
+class enPassant :public piece {
 	public:
-	en_passant (char coul, int x, int y, piece *p);
-	~en_passant ();
-	private:
+	enPassant (char coul, int x, int y, piece *p);
+	~enPassant ();
 	piece *origine;
 };
 

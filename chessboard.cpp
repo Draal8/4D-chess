@@ -143,9 +143,16 @@ bool chessboard::move_piece (int initx, int inity, int x, int y) {
 	return true;
 }
 
-void chessboard::kill (piece *p) {
-	if (p->get_value () == EN_PASSANT)
-		p->~en_passant(this);
+void chessboard::kill (piece *p, int mode) {
+	if (mode == 0 && p->get_value () == EN_PASSANT) {
+		enPassant *ep;
+		ep = (enPassant *) p;
+		pieces[ep->origine->get_y()][ep->origine->get_x()] = NULL;
+		delete ep->origine;
+	} else if (mode == 1) {
+		pieces[p->get_y()][p->get_x()] = NULL;
+	}
+	
 	delete p;
 }
 
@@ -173,19 +180,36 @@ bool chessboard::double_step (int x, int y) {
 			pieces[y][x]->fdeplacement (x, 3);
 			pieces[3][x] = pieces[y][x];
 			pieces[y][x] = NULL;
-			pieces[2][x] = new en_passant(color, x, 2, pieces[3][x]);
-			players[1]->set_S_pass(true, 2, x);
+			pieces[2][x] = new enPassant(color, x, 2, pieces[3][x]);
+			players[1]->set_S_pass(true, x, 2);
 		}
 	} else if (y == 6) {
 		if (pieces[5][x] == NULL && pieces[4][x] == NULL) {
 			pieces[y][x]->fdeplacement (x, 4);
 			pieces[4][x] = pieces[y][x];
 			pieces[y][x] = NULL;
-			pieces[5][x] = new en_passant(color, x, 5, pieces[4][x]);
-			players[0]->set_S_pass(true, 5, x);
+			pieces[5][x] = new enPassant(color, x, 5, pieces[4][x]);
+			players[0]->set_S_pass(true, x, 5);
 		}
 	}
 	return true;
+}
+
+//Other
+
+void chessboard::turn(int i) {
+	static int player;
+	player = i;
+	
+	S_passant s = players[player]->get_S_pass();
+	if (s.actif == true) {
+		kill(pieces[s.y][s.x], 1);
+		players[player]->set_S_pass(false, -1, -1);
+	}
+	
+	//parser()
+	
+	
 }
 
 
