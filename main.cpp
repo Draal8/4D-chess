@@ -1,6 +1,7 @@
 #include <iostream>
 #include "piece.h"
 #include "chessboard.h"
+#include "ttyInterface.h"
 
 using namespace std;
 
@@ -16,10 +17,25 @@ int main() {
 	
 	//cout << "\033[1;36mbonjour\033[0m" << endl;
 	
-	chessboard *c = new chessboard ();
-	//c->print_chessboard2 ();
+	char s[255];
 	
-	c->turn(0); 
+	chessboard *c = new chessboard ();
+	ttyInterface *t = new ttyInterface (c);
+	
+	char ch, str[255];
+	ch = getc(stdin);
+	int i;
+	for (i = 0; i < 254 && ch != '\0' && ch != '\n'; i++) {
+		str[i] = ch;
+		ch = getc(stdin);
+	}
+	str[i] = '\0';
+	
+	cout << str << endl;
+	t->parser(str);
+	c->print_chessboard2 ();
+	
+	/*c->turn(0); 
 	c->double_step(0,1);
 	c->move_piece(3,0,4,0);
 	c->turn(1);
@@ -30,15 +46,15 @@ int main() {
 	//c->pieces[1][0]->deplacement(c, 1, 0);
 	c->print_chessboard2 ();
 	//c->move_piece(3,6,3,5);
-	//c->move_piece(3,1,3,2);
+	//c->move_piece(3,1,3,2);*/
 	
 	
-	
+	/*
 	cout << endl;
 	cout << "print chessboard" << endl;
 	c->print_chessboard2 ();
 	
-	c->~chessboard ();
+	c->~chessboard ();*/
 	return 0;
 }
 

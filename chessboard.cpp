@@ -4,7 +4,7 @@ using namespace std;
 
 //https://techstop.github.io/bash-script-colors/
 
-char empty_chessboard[] = "   1 2 3 4 5 6 7 8 \nA | | | | | | | | |\nB | | | | | | | | |\nC | | | | | | | | |\nD | | | | | | | | |\nE | | | | | | | | |\nF | | | | | | | | |\nG | | | | | | | | |\nH | | | | | | | | |\n";
+char empty_chessboard[] = "\nH | | | | | | | | |\nG | | | | | | | | |\nF | | | | | | | | |\nE | | | | | | | | |\nD | | | | | | | | |\nC | | | | | | | | |\nB | | | | | | | | |\nA | | | | | | | | |\n   1 2 3 4 5 6 7 8 \n";
 
 char black[] = "\e[0;30m";
 char red[] = "\e[0;91m";
@@ -90,11 +90,11 @@ void chessboard::print_chessboard2 () {
 	shift_color = 0;
 	shift_nc = 0;
 	snprintf(color, 16, "%s %s|", yellow, noColor);
-	strcpy(str, "   1 2 3 4 5 6 7 8 ");
+	str[0] = '\0';
 	
 	for (i = 0; i < 8; i++) {
 		strcpy(tmp, "\n  |");
-		c = 'A' + i;
+		c = '8' - i;
 		tmp[1] = c;
 		strcat(&str[strlen(str)], tmp);
 		
@@ -114,6 +114,7 @@ void chessboard::print_chessboard2 () {
 	}
 	str[strlen(str)+1] = '\0';
 	str[strlen(str)] = '\n';
+	strcat(str, "   A B C D E F G H\n");
 	cout << str << endl;	
 }
 
