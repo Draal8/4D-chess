@@ -31,8 +31,8 @@ chessboard::~chessboard () {
 	for (i = 0; i < 8; i++) {
 		for (j = 0; j < 8; j++) {
 			if (pieces[i][j] != NULL) {
-				pieces[i][j]->~piece();
-				//delete(pieces[i][j]);
+				//pieces[i][j]->~piece();
+				delete(pieces[i][j]);
 			}
 		}
 	}
@@ -136,6 +136,8 @@ piece * chessboard::get_piece (int x, int y) {
 
 bool chessboard::move_piece (int initx, int inity, int x, int y) {
 	if (pieces[inity][initx]->deplacement(this, x, y)) {
+		if (pieces[y][x] != NULL)
+			kill(pieces[y][x]);
 		pieces[y][x] = pieces[inity][initx];
 		pieces[inity][initx] = NULL;
 	}
@@ -195,6 +197,38 @@ bool chessboard::double_step (int x, int y) {
 	return true;
 }
 
+void chessboard::promotion (piece *pawn, int x, int y) {
+	int posx, posy;
+	char couleur, c;
+	posx = x;
+	posy = y;
+	couleur = pawn->get_color();
+	
+	kill(pawn);
+	
+	c = getchar();
+	switch (c) {
+	case 'K':
+		pieces[posy][posx] = new king(couleur, posx, posy);
+		break;
+	case 'Q':
+		pieces[posy][posx] = new queen(couleur, posx, posy);
+		break;
+	case 'B':
+		pieces[posy][posx] = new bishop(couleur, posx, posy);
+		break;
+	case 'C':
+		pieces[posy][posx] = new knight(couleur, posx, posy);
+		break;
+	case 'R':
+		pieces[posy][posx] = new rook(couleur, posx, posy);
+		break;
+	default:
+		//catch error
+		break;
+	}
+}
+
 //Other
 
 void chessboard::turn(int i) {
@@ -203,7 +237,7 @@ void chessboard::turn(int i) {
 	
 	S_passant s = players[player]->get_S_pass();
 	if (s.actif == true) {
-		kill(pieces[s.y][s.x], 1);
+		kill(pieces[s.y][s.x]);
 		players[player]->set_S_pass(false, -1, -1);
 	}
 	

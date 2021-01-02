@@ -19,17 +19,15 @@ int main() {
 	chessboard *c = new chessboard ();
 	//c->print_chessboard2 ();
 	
-	c->pieces[4][4] = new pawn('B', 4, 4);
 	c->turn(0); 
-	c->double_step(3,6);
-	c->print_chessboard2 ();
+	c->double_step(0,1);
+	c->move_piece(3,0,4,0);
 	c->turn(1);
-	c->double_step(3,1);
+	c->move_piece(0,0,3,0);
 	c->print_chessboard2 ();
-	c->turn(0);
-	c->print_chessboard2 ();
-	c->move_piece(4,4,4,5);
-	c->turn(1);
+	c->pieces[1][0] = new pawn('W', 0, 1);
+	c->move_piece(0,1,1,0);
+	//c->pieces[1][0]->deplacement(c, 1, 0);
 	c->print_chessboard2 ();
 	//c->move_piece(3,6,3,5);
 	//c->move_piece(3,1,3,2);

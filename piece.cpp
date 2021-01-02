@@ -29,8 +29,7 @@ bool piece::deplacement (chessboard *c, int x, int y) {
 		cout << "\ndeplacement illégal\n";
 		return false;
 	}
-	if (c->piece_in(x,y))
-		c->kill(c->get_piece(x,y), 0);
+	
 	posx = x;
 	posy = y;
 	return true;
@@ -42,7 +41,7 @@ void piece::fdeplacement (int x, int y) {
 }
 
 bool piece::test_deplacement (chessboard *c, int x, int y) {
-	cout << "erreur gros" << c << " " << x << " " << y << " " << value << endl;
+	cout << "erreur surcharge" << c << " " << x << " " << y << " " << value << endl;
 	return false;
 }
 
@@ -243,6 +242,7 @@ pawn::~pawn () {
 }
 
 bool pawn::test_deplacement (chessboard *c, int x, int y) {
+	bool ret = false;
 	cout << "test deplacement pion" << endl;
 	if (x < 0 || y < 0 || x > 7 || y > 7)
 		return false;
@@ -255,7 +255,7 @@ bool pawn::test_deplacement (chessboard *c, int x, int y) {
 			return false;
 		if (posx == x) {
 			if (!c->piece_in(x, y))
-				return true;
+				ret = true;
 		} else if (c->piece_in(x, y)) {
 			cout << "c->piece_in\n";
 			piece *p = c->get_piece(x,y);
@@ -263,12 +263,16 @@ bool pawn::test_deplacement (chessboard *c, int x, int y) {
 			if (p->get_color() == couleur) {
 				return false;
 			} else {
-				return true;
+				ret = true;
 			}
 		}
 	}
 	
-	return false;
+	if (y == 0 || y == 7) {
+		c->promotion (this, posx, posy);
+	}
+	
+	return ret;
 }
 
 
@@ -283,8 +287,5 @@ enPassant::enPassant (char coul, int x, int y, piece *p) : piece(EN_PASSANT, cou
 enPassant::~enPassant () {
 	value = NO_VALUE;
 }
-
-
-
 
 
