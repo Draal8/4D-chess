@@ -10,7 +10,9 @@ class ttyInterface {
 	public :
 	ttyInterface (chessboard *c);
 	~ttyInterface ();
-	void parser (char *str);
+	
+	void play ();
+	int parser (char *str);
 	void time_travel();
 	
 	private :

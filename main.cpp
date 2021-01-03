@@ -21,19 +21,7 @@ int main() {
 	
 	chessboard *c = new chessboard ();
 	ttyInterface *t = new ttyInterface (c);
-	
-	char ch, str[255];
-	ch = getc(stdin);
-	int i;
-	for (i = 0; i < 254 && ch != '\0' && ch != '\n'; i++) {
-		str[i] = ch;
-		ch = getc(stdin);
-	}
-	str[i] = '\0';
-	
-	cout << str << endl;
-	t->parser(str);
-	c->print_chessboard2 ();
+	t->play();
 	
 	/*c->turn(0); 
 	c->double_step(0,1);

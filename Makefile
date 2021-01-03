@@ -50,6 +50,12 @@ $(OBJPATH)/%.o: $(SRCPATH)/%.cpp
 clean:
 	rm -rf $(OBJPATH)/*.o
 	rm -rf $(EXEC)
+	rm -f log.txt
+
+play:
+	@rm -f log.txt
+	@touch log.txt
+	$(EXEC) | (tee "log.txt")
 
 ## Depositories creation ##
 
