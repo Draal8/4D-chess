@@ -40,7 +40,7 @@ class chessboard {
 	//Special moves
 	bool castling (char mode, piece *king);	//rock
 	bool en_passant (int x, int y);
-	bool double_step(int x, int y);
+	void double_step(int x, int y);
 	void promotion(piece *pawn, int x, int y);
 	//bool test_endgame ();
 	

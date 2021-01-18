@@ -136,9 +136,16 @@ piece * chessboard::get_piece (int x, int y) {
 }
 
 bool chessboard::move_piece (int initx, int inity, int x, int y) {
+	if (pieces[inity][initx] == NULL) {
+		cout << "Aucune pièce a l'endroit indiqué\n";
+		return false;
+	}
+	int mode = 1;
 	if (pieces[inity][initx]->deplacement(this, x, y)) {
-		if (pieces[y][x] != NULL)
-			kill(pieces[y][x]);
+		if (pieces[y][x] != NULL) {
+			mode = (pieces[inity][initx]->get_value() == PAWN)? 0:1;
+			kill(pieces[y][x], mode);
+		}
 		pieces[y][x] = pieces[inity][initx];
 		pieces[inity][initx] = NULL;
 	}
@@ -147,12 +154,14 @@ bool chessboard::move_piece (int initx, int inity, int x, int y) {
 }
 
 void chessboard::kill (piece *p, int mode) {
+	cout << "kill p : " << p << " - mode : " << mode << " - value : " << p->get_value () << endl;
 	if (mode == 0 && p->get_value () == EN_PASSANT) {
+		cout << "coucou\n";
 		enPassant *ep;
 		ep = (enPassant *) p;
 		pieces[ep->origine->get_y()][ep->origine->get_x()] = NULL;
-		delete ep->origine;
-	} else if (mode == 1) {
+		kill (ep->origine);
+	} else {
 		pieces[p->get_y()][p->get_x()] = NULL;
 	}
 	
@@ -170,32 +179,16 @@ bool chessboard::test_moves (int x, int y) {
 	return false;
 }
 
-bool chessboard::double_step (int x, int y) {
-	if (test_moves(x,y)) return false;
-	if (pieces[y][x]->get_value() != PAWN) {
-		cout << "La pièce n'est pas un pion\n";
-		return false;
-	}
-	
+void chessboard::double_step (int x, int y) {
 	char color = pieces[y][x]->get_color();
+	
 	if (y == 1) {
-		if (pieces[2][x] == NULL && pieces[3][x] == NULL) {
-			pieces[y][x]->fdeplacement (x, 3);
-			pieces[3][x] = pieces[y][x];
-			pieces[y][x] = NULL;
-			pieces[2][x] = new enPassant(color, x, 2, pieces[3][x]);
-			players[1]->set_S_pass(true, x, 2);
-		}
+		pieces[2][x] = new enPassant(color, x, 2, pieces[1][x]);
+		players[1]->set_S_pass(true, x, 2);
 	} else if (y == 6) {
-		if (pieces[5][x] == NULL && pieces[4][x] == NULL) {
-			pieces[y][x]->fdeplacement (x, 4);
-			pieces[4][x] = pieces[y][x];
-			pieces[y][x] = NULL;
-			pieces[5][x] = new enPassant(color, x, 5, pieces[4][x]);
-			players[0]->set_S_pass(true, x, 5);
-		}
+		pieces[5][x] = new enPassant(color, x, 5, pieces[6][x]);
+		players[0]->set_S_pass(true, x, 5);
 	}
-	return true;
 }
 
 void chessboard::promotion (piece *pawn, int x, int y) {
