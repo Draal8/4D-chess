@@ -47,10 +47,11 @@ class chessboard {
 	//protected:
 	piece *pieces[8][8];		//NULL si vide ou adresse
 	player *players[2];
-	void turn(int i);
+	void turn();
 	private:
 	
 	bool test_moves (int x, int y);
+	int pturn = 0;
 	int shift_color;
 	int shift_nc;
 	//void endgame ();

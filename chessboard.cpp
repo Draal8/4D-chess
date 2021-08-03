@@ -2,9 +2,9 @@
 
 using namespace std;
 
-//https://techstop.github.io/bash-script-colors/
+char empty_chessboard[] = "\n8 | | | | | | | | |\n7 | | | | | | | | |\n6 | | | | | | | | |\n5 | | | | | | | | |\n4 | | | | | | | | |\n3 | | | | | | | | |\n2 | | | | | | | | |\n1 | | | | | | | | |\n   A B C D E F G H \n";
 
-char empty_chessboard[] = "\nH | | | | | | | | |\nG | | | | | | | | |\nF | | | | | | | | |\nE | | | | | | | | |\nD | | | | | | | | |\nC | | | | | | | | |\nB | | | | | | | | |\nA | | | | | | | | |\n   1 2 3 4 5 6 7 8 \n";
+//https://techstop.github.io/bash-script-colors/
 
 char black[] = "\e[0;30m";
 char red[] = "\e[0;91m";
@@ -140,6 +140,10 @@ bool chessboard::move_piece (int initx, int inity, int x, int y) {
 		cout << "Aucune pièce a l'endroit indiqué\n";
 		return false;
 	}
+	if (pieces[inity][initx]->get_color() != players[pturn]->get_color()) {
+		cout << "Le joueur ne peut pas deplacer une piece qui ne lui appartient pas\n";
+		return false;
+	}
 	int mode = 1;
 	if (pieces[inity][initx]->deplacement(this, x, y)) {
 		if (pieces[y][x] != NULL) {
@@ -149,18 +153,22 @@ bool chessboard::move_piece (int initx, int inity, int x, int y) {
 		pieces[y][x] = pieces[inity][initx];
 		pieces[inity][initx] = NULL;
 	}
+	turn();
 	cout << "deplacement fini\n";
 	return true;
 }
 
 void chessboard::kill (piece *p, int mode) {
-	cout << "kill p : " << p << " - mode : " << mode << " - value : " << p->get_value () << endl;
+	//cout << "kill p : " << p << " - mode : " << mode << " - value : " << p->get_value () << endl;
 	if (mode == 0 && p->get_value () == EN_PASSANT) {
-		cout << "coucou\n";
 		enPassant *ep;
 		ep = (enPassant *) p;
+		//we remove the original piece from the chessboard
 		pieces[ep->origine->get_y()][ep->origine->get_x()] = NULL;
+		//we kill the original piece of the en passant token
 		kill (ep->origine);
+		//we change the status of the en passant token to inactive
+		players[(pturn+1)%2]->set_S_pass(false, -1, -1);
 	} else {
 		pieces[p->get_y()][p->get_x()] = NULL;
 	}
@@ -168,19 +176,12 @@ void chessboard::kill (piece *p, int mode) {
 	delete p;
 }
 
-bool chessboard::test_moves (int x, int y) {
-	piece *p = pieces[y][x];
-	if (p == NULL) {
-		cout << "La case sélectionné ne contient pas de pièce\n";
-		return true;
-	}
-	//test de couleur
-	
-	return false;
-}
-
 void chessboard::double_step (int x, int y) {
 	char color = pieces[y][x]->get_color();
+	
+	/*if the pawn is on the first line of each colour then you can double step
+	there is no need to check the colour because you can't go backward
+	and you can't double step forward from line 7 as whites and the contrary*/
 	
 	if (y == 1) {
 		pieces[2][x] = new enPassant(color, x, 2, pieces[1][x]);
@@ -225,19 +226,18 @@ void chessboard::promotion (piece *pawn, int x, int y) {
 
 //Other
 
-void chessboard::turn(int i) {
-	static int player;
-	player = i;
-	
-	S_passant s = players[player]->get_S_pass();
+void chessboard::turn() {
+	pturn = (pturn + 1) % 2;
+	S_passant s = players[pturn]->get_S_pass();
+	//we verify if the en passant token is active
 	if (s.actif == true) {
+		printf("test");
+		//then we remove it and deactivate it
 		kill(pieces[s.y][s.x]);
-		players[player]->set_S_pass(false, -1, -1);
+		players[pturn]->set_S_pass(false, -1, -1);
 	}
 	
 	//parser()
-	
-	
 }
 
 

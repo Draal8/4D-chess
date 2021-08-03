@@ -20,7 +20,7 @@ enum p_value {
 	KNIGHT = 'C',			//Cavalier
 	ROOK = 'R',				//Tour
 	PAWN = 'P',				//Pion
-	EN_PASSANT = '_'		//Phantom value for 'en passant' coup
+	EN_PASSANT = '_'		//Phantom/token value for 'en passant' coup
 };
 
 class piece {

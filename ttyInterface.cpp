@@ -50,6 +50,7 @@ int ttyInterface::parser (char *str) {
 		cout << "commande inconnue" << endl;
 		return -1;
 	}
+	return 0;
 }
 
 

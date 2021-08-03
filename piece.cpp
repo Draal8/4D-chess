@@ -263,6 +263,7 @@ bool pawn::test_deplacement (chessboard *c, int x, int y) {
 			cout << "c->piece_in\n";
 			piece *p = c->get_piece(x,y);
 			cout << "p = " << p << endl;
+			//
 			if (p->get_color() == couleur) {
 				return false;
 			} else {
@@ -270,9 +271,13 @@ bool pawn::test_deplacement (chessboard *c, int x, int y) {
 			}
 		}
 	} else if (abs(posy-y) == 2) {
+		cout << "double step\n";
 		int signe = (posy-y) / abs(posy-y);
 		if (posx == x) {
+			cout << "x :" << x << " y :" << y << " signe :" << signe << endl;
+			cout << "true :" << true << "!c->piece_in(x, y) : " << !c->piece_in(x, y) << "!c->piece_in(x, y-signe) : " << !c->piece_in(x, y+signe) << endl;
 			if (!c->piece_in(x, y) && !c->piece_in(x, y-signe)) {
+				cout << "piece in\n";
 				ret = true;
 				c->double_step(posx, posy);
 			}
