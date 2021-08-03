@@ -7,15 +7,6 @@ player::player (char col) {
 
 player::~player () { }
 
-/*void player::turn(chessboard *c) {
-	if (S_pass.actif == true) {
-		c->kill(c->get_piece(S_pass.x, S_pass.y), 1);
-		S_pass.actif = false;
-	}
-	
-	
-}*/
-
 //Getters/Setters
 char player::get_color () {
 	return color;
@@ -32,11 +23,11 @@ void player::set_S_pass (bool a, int x, int y) {
 }
 
 bool player::get_castling (int mode) {
-	return (mode = 'b')? b_castling : l_castling;
+	return (mode == 'b')? b_castling : l_castling;
 }
 
-void player::set_castling (int mode, int value) {
-	(mode = 'b')? b_castling = value : l_castling = value;
+void player::set_castling (int mode, bool value) {
+	(mode == 'b')? b_castling = value : l_castling = value;
 }
 
 

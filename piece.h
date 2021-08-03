@@ -48,6 +48,7 @@ class piece {
 	//test de rencontre de pieces au passage
 	bool tour_rencontre_piece (chessboard *c, int x, int y);
 	bool fou_rencontre_piece (chessboard *c, int x, int y);
+	//Peut-etre le passer en heritage multiple pour la reine ca serait plus logique
 	
 	private:
 	virtual bool test_deplacement (chessboard *c, int x, int y);

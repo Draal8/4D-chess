@@ -46,23 +46,17 @@ bool piece::test_deplacement (chessboard *c, int x, int y) {
 }
 
 bool piece::tour_rencontre_piece (chessboard *c, int x, int y) {
-	cout << "tour_recontre_piece" << endl;
 	int i;
 	if (x != posx) {
-		cout << "x et posx :" << x << "-" << posx << endl;
 		int signe = (posx-x) / abs(posx-x); //= 1 ou -1
 		for (i = posx-signe; i != x; i = i - signe) {
 			if (c->piece_in(i,y))
 				return true;
 		}
 	} else {
-		cout << "y:" << y << " et posy:" << posy << endl;
 		int signe = (posy-y) / abs(posy-y);
-		cout << "signe = " << signe << endl;
 		for (i = posy-signe; i != y; i = i - signe) {
-			cout << "piece_in : " << c->piece_in(x,i) << endl;
 			if (c->piece_in(x,i)) {
-				cout << "trouve en " << i << endl;
 				return true;
 			}
 		}
@@ -71,7 +65,6 @@ bool piece::tour_rencontre_piece (chessboard *c, int x, int y) {
 }
 
 bool piece::fou_rencontre_piece (chessboard *c, int x, int y) {
-	cout << "fou_recontre_piece" << endl;
 	int i, j;
 	int signex = (posx-x) / abs(posx-x); //= 1 ou -1
 	int signey = (posy-y) / abs(posy-y);
@@ -96,7 +89,6 @@ king::~king () {
 }
 
 bool king::test_deplacement (chessboard *c, int x, int y) {
-	cout << "test deplacement roi" << endl;
 	(void) c;
 	if (x < 0 || y < 0 || x > 7 || y > 7)
 		return false;
@@ -117,7 +109,6 @@ queen::~queen () {
 }
 
 bool queen::test_deplacement (chessboard *c, int x, int y) {
-	cout << "test deplacement reine" << endl;
 	piece *p;
 	if (x < 0 || y < 0 || x > 7 || y > 7)
 		return false;
@@ -154,7 +145,6 @@ bishop::~bishop () {
 }
 
 bool bishop::test_deplacement (chessboard *c, int x, int y) {
- 	cout << "test deplacement bishop" << endl;
  	(void) c;
  	piece *p;
 	if (x < 0 || y < 0 || x > 7 || y > 7)
@@ -184,7 +174,6 @@ knight::~knight () {
 }
 
 bool knight::test_deplacement (chessboard *c, int x, int y) {
-	cout << "test deplacement cavalier" << endl;
 	if (x < 0 || y < 0 || x > 7 || y > 7)
 		return false;
 	if (x == posx && y == posy)
@@ -213,7 +202,6 @@ rook::~rook () {
 }
 
 bool rook::test_deplacement (chessboard *c, int x, int y) {
-	cout << "test deplacement tour" << endl;
 	(void) c;
 	piece *p;
 	if (x < 0 || y < 0 || x > 7 || y > 7)
@@ -243,7 +231,6 @@ pawn::~pawn () {
 
 bool pawn::test_deplacement (chessboard *c, int x, int y) {
 	bool ret = false;
-	cout << "test deplacement pion" << endl;
 	
 	if (x < 0 || y < 0 || x > 7 || y > 7)
 		return false;
@@ -251,19 +238,14 @@ bool pawn::test_deplacement (chessboard *c, int x, int y) {
 		return false;
 	if (posy-y < 0 && couleur == 'W')
 		return false;
-		
 	
 	if (abs(posy-y) == 1) {
-		cout << "abs(posy-y)\n";
 		
 		if (posx == x) {
 			if (!c->piece_in(x, y))
 				ret = true;
 		} else if (c->piece_in(x, y)) {
-			cout << "c->piece_in\n";
 			piece *p = c->get_piece(x,y);
-			cout << "p = " << p << endl;
-			//
 			if (p->get_color() == couleur) {
 				return false;
 			} else {
@@ -271,13 +253,9 @@ bool pawn::test_deplacement (chessboard *c, int x, int y) {
 			}
 		}
 	} else if (abs(posy-y) == 2) {
-		cout << "double step\n";
 		int signe = (posy-y) / abs(posy-y);
 		if (posx == x) {
-			cout << "x :" << x << " y :" << y << " signe :" << signe << endl;
-			cout << "true :" << true << "!c->piece_in(x, y) : " << !c->piece_in(x, y) << "!c->piece_in(x, y-signe) : " << !c->piece_in(x, y+signe) << endl;
 			if (!c->piece_in(x, y) && !c->piece_in(x, y-signe)) {
-				cout << "piece in\n";
 				ret = true;
 				c->double_step(posx, posy);
 			}

@@ -38,7 +38,7 @@ class chessboard {
 	void kill (piece *p, int mode = 1);
 	
 	//Special moves
-	bool castling (char mode, piece *king);	//rock
+	bool castling (char mode);	//rock
 	bool en_passant (int x, int y);
 	void double_step(int x, int y);
 	void promotion(piece *pawn, int x, int y);
@@ -52,8 +52,8 @@ class chessboard {
 	
 	bool test_moves (int x, int y);
 	int pturn = 0;
-	int shift_color;
-	int shift_nc;
+	int shift_color;		//initialisé mais pas utilisé
+	int shift_nc;			//initialisé mais pas utilisé
 	//void endgame ();
 	
 };

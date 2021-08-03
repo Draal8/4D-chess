@@ -41,9 +41,11 @@ int ttyInterface::parser (char *str) {
 		chess->move_piece ((int) initx - 'A', 8 - inity, (int) x - 'A', 8 - y);
 		return 0;
 	} else if (strncmp (str, "petit rock", 10) == 0) {
-		//TODO
+		chess->castling('l');
+		return 0;
 	} else if (strncmp (str, "grand rock", 10) == 0) {
-		//TODO
+		chess->castling('b');
+		return 0;
 	} else if (strncmp (str, "surrender", 9) == 0) {
 		return -2;
 	} else {
