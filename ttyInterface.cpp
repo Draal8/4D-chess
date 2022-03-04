@@ -33,6 +33,7 @@ int ttyInterface::parser (char *str) {
 	char x, initx;
 	if (strncmp (str, "move", 4) == 0) {
 		sscanf(str, "move %c%d %c%d", &initx, &inity, &x, &y);
+		//la condition ci-dessous n'est pas vraiment exacte
 		if (initx < 'A' || initx > 'H' || x < 'A' || x > 'H'
 		|| inity < 1 || inity > 8 || y < 1 || y > 8) {
 			cout << "les coordonnées sont incorrectes" << endl;

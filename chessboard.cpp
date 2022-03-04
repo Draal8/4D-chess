@@ -170,6 +170,10 @@ bool chessboard::move_piece (int initx, int inity, int x, int y) {
 	} else {
 		return false;
 	}
+	
+	if (pieces[y][x]->test_promote())
+		promotion(pieces[y][x], x, y);
+	
 	turn();
 	return true;
 }
@@ -276,9 +280,6 @@ void chessboard::promotion (piece *pawn, int x, int y) {
 	
 	c = getchar();
 	switch (c) {
-	case 'K':
-		pieces[posy][posx] = new king(couleur, posx, posy);
-		break;
 	case 'Q':
 		pieces[posy][posx] = new queen(couleur, posx, posy);
 		break;
@@ -305,6 +306,7 @@ void chessboard::turn() {
 	//we verify if the en passant token is active
 	if (s.actif == true) {
 		//then we remove it and deactivate it
+		cout << "test\n";
 		kill(pieces[s.y][s.x]);
 		players[pturn]->set_S_pass(false, -1, -1);
 	}

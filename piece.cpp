@@ -23,6 +23,8 @@ char piece::get_color () { return couleur; }
 int piece::get_y () { return posy; }
 int piece::get_x () { return posx; }
 
+bool piece::test_promote() { return false; }
+bool pawn::test_promote() { return (posx == 0 || posx == 7); }
 
 bool piece::deplacement (chessboard *c, int x, int y) {
 	if (!this->test_deplacement(c,x,y)) {

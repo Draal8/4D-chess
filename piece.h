@@ -38,6 +38,8 @@ class piece {
 	int get_x ();
 	int get_y ();
 	
+	bool test_promote();
+	
 	//uniquement accessible par les fils
 	protected:
 	char couleur;	//'B' ou 'N'
@@ -102,6 +104,7 @@ class pawn :public piece {
 	pawn (char coul, int x, int y);
 	~pawn ();
 	bool test_deplacement (chessboard *c, int x, int y);
+	bool test_promote();
 };
 
 class enPassant :public piece {
