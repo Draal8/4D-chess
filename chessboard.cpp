@@ -22,8 +22,8 @@ int NcLen = 4;
 
 chessboard::chessboard () {
 	init_chessboard ();
-	players[0] = new player('W');
-	players[1] = new player('B');
+	players[0] = new player('W', pieces[7][4]);
+	players[1] = new player('B', pieces[0][4]);
 }
 
 chessboard::~chessboard () {
@@ -55,7 +55,6 @@ void chessboard::init_chessboard () {
 	pieces[0][7] = new rook('B', 7, 0);
 	pieces[7][0] = new rook('W', 0, 7);
 	pieces[7][7] = new rook('W', 7, 7);
-	
 	int i;
 	for (i = 0; i < 8; i++)
 		pieces[1][i] = new pawn('B', i, 1);
@@ -145,7 +144,6 @@ bool chessboard::move_piece (int initx, int inity, int x, int y) {
 		cout << "Le joueur ne peut pas deplacer une piece qui ne lui appartient pas\n";
 		return false;
 	}
-	int mode = 1;
 	if (pieces[inity][initx]->deplacement(this, x, y)) {
 		
 		//On empeche de faire des rock dans le futur si on bouge certaines pieces
@@ -161,9 +159,8 @@ bool chessboard::move_piece (int initx, int inity, int x, int y) {
 		}
 		
 		if (pieces[y][x] != NULL) {
-			mode = (pieces[inity][initx]->get_value() == PAWN)? 0:1;
 			cout << "kill : " << pieces[y][x]->get_value() << endl;
-			kill(pieces[y][x], mode);
+			kill(pieces[y][x]);
 		}
 		pieces[y][x] = pieces[inity][initx];
 		pieces[inity][initx] = NULL;
@@ -178,16 +175,16 @@ bool chessboard::move_piece (int initx, int inity, int x, int y) {
 	return true;
 }
 
-void chessboard::kill (piece *p, int mode) {
-	if (mode == 0 && p->get_value () == EN_PASSANT) {
+void chessboard::kill (piece *p/*, int mode*/) {
+	/*if (mode == 0 && p->get_value () == EN_PASSANT) {
 		enPassant *ep;
-		ep = (enPassant *) p;
+		ep = (enPassant *) p;*/
 		
 		/*we remove the original piece from the chessboard
 		we kill the original piece of the en passant token
 		we change the status of the en passant token to inactive*/
 		
-		pieces[ep->origine->get_y()][ep->origine->get_x()] = NULL;
+		/*pieces[ep->origine->get_y()][ep->origine->get_x()] = NULL;
 		kill (ep->origine);
 		players[(pturn+1)%2]->set_S_pass(false, -1, -1);
 	} else if (p->get_value () == EN_PASSANT) {
@@ -197,26 +194,29 @@ void chessboard::kill (piece *p, int mode) {
 	} else {
 		cout << "piece killed : " << p->get_value() << endl;
 		pieces[p->get_y()][p->get_x()] = NULL;
-	}
+	}*/
 	
+	cout << "piece killed : " << p->get_value() << endl;
+	pieces[p->get_y()][p->get_x()] = NULL;
 	delete p;
 }
 
+/*
 void chessboard::double_step (int x, int y) {
-	char color = pieces[y][x]->get_color();
+	char color = pieces[y][x]->get_color();*/
 	
 	/*if the pawn is on the first line of each colour then you can double step
 	there is no need to check the colour because you can't go backward
 	and you can't double step forward from line 7 as whites and the contrary*/
-	
+	/*
 	if (y == 1) {
 		pieces[2][x] = new enPassant(color, x, 2, pieces[1][x]);
-		players[1]->set_S_pass(true, x, 2);
+		//players[1]->set_S_pass(true, x, 2);
 	} else if (y == 6) {
 		pieces[5][x] = new enPassant(color, x, 5, pieces[6][x]);
-		players[0]->set_S_pass(true, x, 5);
+		//players[0]->set_S_pass(true, x, 5);
 	}
-}
+}*/
 
 bool chessboard::castling (char mode) {
 	int y = (pturn+1)%2*7;
@@ -296,22 +296,116 @@ void chessboard::promotion (piece *pawn, int x, int y) {
 		//catch error
 		break;
 	}
+	fflush(stdin);
+	
+}
+
+
+/*if we want something that is maybe faster by a little bit we can maintain a chessboard
+with booleans if attacked by whites and bollean for blacks. Then is_checked is just checking booleans.
+which means instead of checking every ennemy piece/turn. We update discovered cases and remove blindspots
+so that we don't iterate (hopefully) on every pieces.
+Maybe the idea isn't that smart though it seems we still have to iterate on multiple pieces to find blindspots
+Better idea maybe just maintain this only for cases next to the king and on the last line for castling*/
+
+//echec
+piece *chessboard::is_attacked(int x, int y, char color) {
+	piece *danger = malloc(16 * sizeof(piece *));	//hopefully you won't get attacked by more than all of the opponent's pieces :)
+	int nb_dangers = 0;
+	
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; i < 8; i++) {
+			if (pieces[i][j] != NULL && pieces[i][j]->couleur != color) {	//if piece exist and is of the other color
+				if (pieces[i][j]->test_deplacement(this,x,y)) {		//test if it can reach the specific case
+					danger[nb_dangers] = pieces[i][j];
+					nb_dangers++;
+					//flag = 2;
+				}
+			}
+		}
+	}
+	if (nb_dangers == 0) {
+		free(danger);
+		return NULL;
+	}
+	return danger;
+}
+
+//flag = {0: nothing, 1: checkmate, 2: check}
+int chessboard::is_checked() {	//checking checks and checkmates
+	piece *k = player[pturn]->king;
+	int x = k->posx;
+	int y = k->posy
+	int nb_dangers = 0;
+	flag = 0;
+	
+	piece *danger = chessboard::is_attacked(x, y, k->couleur);	//is the king in danger ?
+	if (danger == NULL) return 0;	//no check was found
+	else 
+		for (int i = 0; i < 16 && danger[i] != NULL; i++) nb_dangers++;	//count the number of times it is
+	
+	//can the king move ?
+	if (flagking_can_move() == 1) return 1;	//check was found but there is at least one legal move therefore no mate
+	if (nb_dangers > 1)	return 2;	//you can't escape a mate from multiple sources without moving
+	
+	//can we kill the piece attacking then ?
+	if (is_attacked(danger[0]->x, danger[0]->y, danger[0]->couleur) != NULL) return 1;
+	
+	//can we block the attack then ?
+	if (danger[0]->get_value() == 'C' || ) return 2;	//cannot block a knight
+	if (danger[0]->can_be_blocked(this, k)) return 1;
+	else return 2;
+	
+	
+	/*//sending the dangerous pieces to the chessboard
+	piece **msg = malloc(sizeof(*piece) * nb_dangers);
+	for (int i = 0; i < nb_dangers; i++) {
+		msg[i] = danger[i];
+	}
+	this->piece_that_checks = msg;
+	 
+	return flag*/
+}
+
+int chessboard::king_can_move() {
+	int flag = 0;
+	piece *k = player[pturn]->king;
+	for (int i = 0; i < 3 && flag == 0; i++) {
+		for (int j = 0; i < 3 && flag == 0; i++) {
+			int x = k->posx-1+i;
+			int y = k->posy-1+j;
+			if (i != 1 && j != 1 && k->test_deplacement(this, x, y)) { //if j == 1 and i == 1 then it'd check again
+				piece *temp = this->is_attacked(x, y, k->couleur);
+				if (piece == NULL) flag = 1;
+				else free(piece);	//no need to free and malloc each time we need to use this->piece_that_checks that needs one allocation and then we set its cases to NULL when needed
+			}
+		}
+	}
+	
+	return flag;
 }
 
 //Other
 
 void chessboard::turn() {
 	pturn = (pturn + 1) % 2;
-	S_passant s = players[pturn]->get_S_pass();
-	//we verify if the en passant token is active
-	if (s.actif == true) {
-		//then we remove it and deactivate it
-		cout << "test\n";
-		kill(pieces[s.y][s.x]);
-		players[pturn]->set_S_pass(false, -1, -1);
+	int temp = is_checked();
+	if (temp == 1) {
+		cout << "This is the end\n";
+		this->endgame();
+	} else if (temp == 2) {
+		this->is_checked = true;
 	}
+	//we verify if the en passant token is active
+	
 	
 	//parser()
 }
 
+void endgame () {
+	
+	
+	
+	
+}
 

@@ -37,7 +37,9 @@ class piece {
 	char get_color ();
 	int get_x ();
 	int get_y ();
+	bool get_en_passant();
 	
+	bool can_be_blocked(chessboard *c, piece *p);
 	bool test_promote();
 	
 	//uniquement accessible par les fils
@@ -50,7 +52,7 @@ class piece {
 	//test de rencontre de pieces au passage
 	bool tour_rencontre_piece (chessboard *c, int x, int y);
 	bool fou_rencontre_piece (chessboard *c, int x, int y);
-	//Peut-etre le passer en heritage multiple pour la reine ca serait plus logique
+	//Peut-etre le passer en heritage multiple pour la reine ca serait ptet plus logique
 	
 	private:
 	virtual bool test_deplacement (chessboard *c, int x, int y);
@@ -100,18 +102,24 @@ class rook :public piece {
 };
 
 class pawn :public piece {
+	private:
+	bool en_passant = false;
+	
 	public:
 	pawn (char coul, int x, int y);
 	~pawn ();
+	bool get_en_passant();
+	bool deplacement(chessboard *c, int x, int y);
 	bool test_deplacement (chessboard *c, int x, int y);
 	bool test_promote();
+	
 };
-
+/*
 class enPassant :public piece {
 	public:
 	enPassant (char coul, int x, int y, piece *p);
 	~enPassant ();
 	piece *origine;
-};
+};*/
 
 #endif

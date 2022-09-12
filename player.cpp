@@ -1,8 +1,9 @@
 #include "player.h"
 
-player::player (char col) {
+player::player (char col, piece *p) {
 	color = col;
-	S_pass.actif = false;
+	king = p;
+	//S_pass.actif = false;
 }
 
 player::~player () { }
@@ -12,15 +13,15 @@ char player::get_color () {
 	return color;
 }
 
-struct S_passant player::get_S_pass () {
+/*struct S_passant player::get_S_pass () {
 	return S_pass;
-}
+}*/
 
-void player::set_S_pass (bool a, int x, int y) {
+/*void player::set_S_pass (bool a, int x, int y) {
 	S_pass.actif = a;
 	S_pass.x = x;
 	S_pass.y = y;	
-}
+}*/
 
 bool player::get_castling (int mode) {
 	return (mode == 'b')? b_castling : l_castling;

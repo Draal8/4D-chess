@@ -22,6 +22,7 @@ char piece::get_value () { return value; }
 char piece::get_color () { return couleur; }
 int piece::get_y () { return posy; }
 int piece::get_x () { return posx; }
+bool piece::get_en_passant () { return false; }
 
 bool piece::test_promote() { return false; }
 bool pawn::test_promote() { return (posx == 0 || posx == 7); }
@@ -99,6 +100,10 @@ bool king::test_deplacement (chessboard *c, int x, int y) {
 	return false;
 }
 
+bool king::can_be_blocked(chessboard *c, piece *p) {
+	return false;	//should throw an exception though
+}
+
 
 /**********************************************************
 						Class Queen
@@ -135,6 +140,10 @@ bool queen::test_deplacement (chessboard *c, int x, int y) {
 	return false;
 }
 
+bool queen::can_be_blocked(chessboard *c, piece *p) {
+	return false;
+}
+
 
 /**********************************************************
 						Class Bishop
@@ -161,6 +170,10 @@ bool bishop::test_deplacement (chessboard *c, int x, int y) {
 			if (p == NULL) return true;
 		}
 	}
+	return false;
+}
+
+bool bishop::can_be_blocked(chessboard *c, piece *p) {
 	return false;
 }
 
@@ -192,6 +205,10 @@ bool knight::test_deplacement (chessboard *c, int x, int y) {
 	return false;
 }
 
+bool knight::can_be_blocked(chessboard *c, piece *p) {
+	return false;
+}
+
 
 /**********************************************************
 						Class Rook
@@ -220,6 +237,28 @@ bool rook::test_deplacement (chessboard *c, int x, int y) {
 	return false;
 }
 
+bool rook::can_be_blocked(chessboard *c, piece *p) {
+	int diff_x = abs(this->x - p->get_x ());
+	int diff_y = abs(this->y - p->get_y ());
+	bool flag = false;
+	
+	if (diff_y == 0) {
+		int i = (this->x - p->get_x () > 0)? p->get_x ()+1 : this->x+1;	//+0 was already checked (it's where the piece is)
+		int max = i + diff_x;
+		for (; i < max && flag != true; i++) {
+			if (c->is_attacked(i, this->y, this->couleur)) flag = true;
+		}
+	} else {
+		int i = (this->y - p->get_y () > 0)? p->get_y ()+1 : this->y+1;	//+0 was already checked (it's where the piece is)
+		int max = i + diff_y;
+		for (; i < max && flag != true; i++) {
+			if (c->is_attacked(this->x, i, this->couleur)) flag = true;
+		}
+	}
+	
+	return flag;
+}
+
 
 /**********************************************************
 						Class Pawn
@@ -231,6 +270,8 @@ pawn::~pawn () {
 	value = NO_VALUE;
 }
 
+bool pawn::get_en_passant() { return en_passant; }
+
 bool pawn::test_deplacement (chessboard *c, int x, int y) {
 	bool ret = false;
 	
@@ -241,8 +282,10 @@ bool pawn::test_deplacement (chessboard *c, int x, int y) {
 	if (posy-y < 0 && couleur == 'W')
 		return false;
 	
+	int sign = (posy-y) / abs(posy-y);		//normalized
+	cout << "sign = " << sign << endl;
 	if (abs(posy-y) == 1) {
-		
+		cout << "deplacement normal\n";
 		if (posx == x) {
 			if (!c->piece_in(x, y))
 				ret = true;
@@ -253,15 +296,27 @@ bool pawn::test_deplacement (chessboard *c, int x, int y) {
 			} else {
 				ret = true;
 			}
-		}
-	} else if (abs(posy-y) == 2) {
-		int signe = (posy-y) / abs(posy-y);
-		if (posx == x) {
-			if (!c->piece_in(x, y) && !c->piece_in(x, y-signe)) {
+		} else if (c->piece_in(x, y-sign) && c->get_piece(x,y-sign)->get_en_passant()) {
+			cout << "en passant\n";
+		//-sign cause we need to find a piece in opposite direction
+			piece *p = c->get_piece(x,y-sign);
+			if (p->get_color() == couleur) {
+				return false;
+			} else {
 				ret = true;
-				c->double_step(posx, posy);
+				c->kill(p);		//we did the en_passant move
 			}
 		}
+	} else if (abs(posy-y) == 2) {
+		
+		if (posx == x) {
+			if (!c->piece_in(x, y) && !c->piece_in(x, y-sign)) {
+				ret = true;
+				//c->double_step(posx, posy);
+			}
+		}
+	} else {
+		cout << "else\n";
 	}
 	
 	if (y == 0 || y == 7) {
@@ -271,17 +326,36 @@ bool pawn::test_deplacement (chessboard *c, int x, int y) {
 	return ret;
 }
 
+bool pawn::deplacement (chessboard *c, int x, int y) {
+	if (!this->test_deplacement(c,x,y)) {
+		cout << "\ndeplacement illégal\n";
+		return false;
+	}
+	
+	if (abs(posy-y) == 2) {
+		this->en_passant = true;
+	}
+	
+	posx = x;
+	posy = y;
+	return true;
+}
+
+bool pawn::can_be_blocked(chessboard *c, piece *p) {
+	return false;
+}
+
 
 /**********************************************************
 						Class En_passant
 **********************************************************/
 
-enPassant::enPassant (char coul, int x, int y, piece *p) : piece(EN_PASSANT, coul, x, y) {
+/*enPassant::enPassant (char coul, int x, int y, piece *p) : piece(EN_PASSANT, coul, x, y) {
 	origine = p;
 }
 
 enPassant::~enPassant () {
 	value = NO_VALUE;
-}
+}*/
 
 
