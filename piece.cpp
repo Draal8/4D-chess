@@ -141,7 +141,33 @@ bool queen::test_deplacement (chessboard *c, int x, int y) {
 }
 
 bool queen::can_be_blocked(chessboard *c, piece *p) {
-	return false;
+	//int diff = abs(this->x - p->get_x ());		//no need for y part since it is the same result
+	int diff_x = abs(this->x - p->get_x ());
+	int diff_y = abs(this->y - p->get_y ());
+	int sign_x = (this->x - p->get_x ())/diff_x;	//= 1 or -1
+	int sign_y = (this->y - p->get_y ())/diff_y;	//= 1 or -1
+	bool flag = false;
+	
+	if (diff_x > 0 && diff_y > 0) {	//bishop style
+		for (int i = 0; i < diff_x && flag != true; i++)
+			if (c->is_attacked(this->x + sign_x*i, this->y + sign_y*i, this->couleur)) flag = true;
+	} else {						//rook style
+		if (diff_y == 0) {
+			int i = (this->x - p->get_x () > 0)? p->get_x ()+1 : this->x+1;	//+0 was already checked (it's where the piece is)
+			int max = i + diff_x;
+			for (; i < max && flag != true; i++) {
+				if (c->is_attacked(i, this->y, this->couleur)) flag = true;
+			}
+		} else {
+			int i = (this->y - p->get_y () > 0)? p->get_y ()+1 : this->y+1;	//+0 was already checked (it's where the piece is)
+			int max = i + diff_y;
+			for (; i < max && flag != true; i++) {
+				if (c->is_attacked(this->x, i, this->couleur)) flag = true;
+			}
+		}
+	}
+	
+	return flag;
 }
 
 
@@ -174,7 +200,15 @@ bool bishop::test_deplacement (chessboard *c, int x, int y) {
 }
 
 bool bishop::can_be_blocked(chessboard *c, piece *p) {
-	return false;
+	int diff = abs(this->x - p->get_x ());		//no need for y part since it is the same result
+	int sign_x = (this->x - p->get_x ())/diff;	//= 1 or -1
+	int sign_y = (this->y - p->get_y ())/diff;	//= 1 or -1
+	bool flag = false;
+	
+	for (int i = 0; i < diff && flag != true; i++)
+		if (c->is_attacked(this->x + sign_x*i, this->y + sign_y*i, this->couleur)) flag = true;
+	
+	return flag;
 }
 
 

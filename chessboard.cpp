@@ -309,7 +309,8 @@ Maybe the idea isn't that smart though it seems we still have to iterate on mult
 Better idea maybe just maintain this only for cases next to the king and on the last line for castling*/
 
 //echec
-piece *chessboard::is_attacked(int x, int y, char color) {
+piece *chessboard::is_attacked(int x, int y, char color) {	//there will be a bug here someday with pawns
+	//since we use this function as "can this piece be attacked ?" as well as "can this case be reached ?" which is different for pawns only
 	piece *danger = malloc(16 * sizeof(piece *));	//hopefully you won't get attacked by more than all of the opponent's pieces :)
 	int nb_dangers = 0;
 	
@@ -337,7 +338,6 @@ int chessboard::is_checked() {	//checking checks and checkmates
 	int x = k->posx;
 	int y = k->posy
 	int nb_dangers = 0;
-	flag = 0;
 	
 	piece *danger = chessboard::is_attacked(x, y, k->couleur);	//is the king in danger ?
 	if (danger == NULL) return 0;	//no check was found
@@ -345,7 +345,7 @@ int chessboard::is_checked() {	//checking checks and checkmates
 		for (int i = 0; i < 16 && danger[i] != NULL; i++) nb_dangers++;	//count the number of times it is
 	
 	//can the king move ?
-	if (flagking_can_move() == 1) return 1;	//check was found but there is at least one legal move therefore no mate
+	if (king_can_move() == 1) return 1;	//check was found but there is at least one legal move therefore no mate
 	if (nb_dangers > 1)	return 2;	//you can't escape a mate from multiple sources without moving
 	
 	//can we kill the piece attacking then ?
